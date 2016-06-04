@@ -4,45 +4,45 @@ DBToolSwift是对数据库操作的面向对象的封装，使用Swift runtime�
   使用:把DBTool.swift拖入项目中使用即可
 
     使用
-    DBTool *tool = [DBTool sharedDBTool];
-    [tool createTableWithClass:[Person class]];
-    Person *p = [Person initName:@"小明" age:19];
-    [tool insertWithObj:p];
-    Person *p1 = [Person initName:@"小红" age:10];
-    [tool insertWithObj:p1];
-    Person *p2 = [Person initName:@"小小" age:12];
-    [tool insertWithObj:p2];
-    Person *p3 = [Person initName:@"小黑" age:23];
-    [tool insertWithObj:p3];
+    let tool:DBTool = DBTool.shareDBTool()
+    tool .createTable(Person.self)
+    let p:Person = Person(name: "小明",age: 19)
+    tool .insertObj(p)
+    let p1:Person = Person(name: "小红",age: 10)
+    tool .insertObj(p1)
+    let p2:Person = Person(name: "小小",age: 12)
+    tool .insertObj(p2)
+    let p3:Person = Person(name: "小黑",age: 23)
+    tool .insertObj(p3)
+   
+    var persons:NSArray = tool .selectAll(Person.self);
+    for p in persons
+    {
+      print((p as! Person).description)
+    }
+   
+    tool .deleteRecord(Person.self, key: "age", isGreaterEqualValue: "23")
+    persons = tool .selectAll(Person.self);
+    for p in persons
+    {
+    print((p as! Person).description)
+    }
     
-    NSArray *data = [tool selectWithClass:[Person class] params:nil];
-    for (int i=0;i<data.count;i++)
-    {
-        Person *p4 = data[i];
-        NSLog(@"%@",p4);
+    p2.age = 18
+     tool .update(p2, key: "name", isEqualValue: "小小")
+    persons = tool .selectAll(Person.self);
+    for p in persons
+     {
+        print((p as! Person).description)
     }
-    [tool deleteRecordWithClass:[Person class] andKey:@"age" isGreaterEqualValue:@"23"];
-    data = [tool selectWithClass:[Person class] params:nil];
-    for (int i=0;i<data.count;i++)
-    {
-        Person *p3 = data[i];
-        NSLog(@"%@",p3);
-    }
-    p2.age = 18;
-    [tool updateWithObj:p2 andKey:@"name" isEqualValue:@"小小"];
-    data = [tool selectAllWithClass:[Person class]];
-    for (int i=0;i<data.count;i++)
-    {
-        Person *p3 = data[i];
-        NSLog(@"%@",p3);
-    }
-    data = [tool selectWithClass:[Person class] andKey:@"name" isGreaterValue:@12];
-    for (int i=0;i<data.count;i++)
-    {
-        Person *p3 = data[i];
-        NSLog(@"%@",p3);
-    }
-    [tool dropTableWithClass:[Person class]];
+        
+     persons = tool .select(Person.self, key: "age", isLessEqualValue: "12")
+     for p in persons
+     {
+         print((p as! Person).description)
+     }
+        
+     tool .dropTable(Person.self)
     
     //打印
     create sql ->CREATE TABLE IF NOT EXISTS Person(ID INTEGER PRIMARY KEY AUTOINCREMENT,_age TEXT,_name TEXT)
